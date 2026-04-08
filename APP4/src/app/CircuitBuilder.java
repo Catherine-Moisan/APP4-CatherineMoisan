@@ -15,34 +15,40 @@ import java.util.List;
 
 public class CircuitBuilder {
 
-    public Composant construireCircuit (String cheminFichier) throws IOException {
+    public Composant construireCircuit (String cheminFichier) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode root = mapper.readTree(new File(cheminFichier));
-        return lireComposant(root);
+        JsonNode root;
+        try{
+            root = mapper.readTree(new File(cheminFichier));
+        } catch (Exception e){
+            throw new Exception("Impossible de lire le fichier Json : " + e.getMessage());
+        }
+
+        if (!root.has("circuit")) {
+            throw new IllegalArgumentException("Le fichier ne contient pas les objets nécéssaires");
+        }
+        JsonNode noeudCircuit = root.get("circuit");
+        return lireComposant(noeudCircuit);
 
     }
 
     private Composant lireComposant(JsonNode noeudCircuit) {
-
         String type = noeudCircuit.get("type").asText();
 
-        if (type.equals("resistance")){
+        if ("resistance".equals(type)){
             return new Resistance(noeudCircuit.get("valeur").asDouble());
         }
-
-        if (type.equals("serie")){
+        else if ("serie".equals(type)){
             List<Composant> listeSerie = new ArrayList<>();
 
             for (JsonNode composantNoeud : noeudCircuit.get("composants")){
                 listeSerie.add(lireComposant(composantNoeud));
             }
             return new CircuitSerie(listeSerie);
-        }
-
-        if (type.equals("parallele")){
+        } else if ("parallele".equals(type)){
             List<Composant> listeParallele = new ArrayList<>();
 
-            for (JsonNode composantNoeud : noeudCircuit.get("composant")){
+            for (JsonNode composantNoeud : noeudCircuit.get("composants")){
                 listeParallele.add(lireComposant(composantNoeud));
             }
             return new CircuitParallele(listeParallele);
