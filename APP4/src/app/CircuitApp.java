@@ -50,25 +50,24 @@ public class CircuitApp {
             } catch (Exception e) {
                 System.out.println("Erreur lors du traitement : " + e.getMessage());
             }
-        }
 
+            System.out.println("\n [R] pour tester un autrte fichier");
+            System.out.println("\n [Q] pour fermer le programme");
 
-        System.out.println("\n [R] pour tester un autrte fichier");
-        System.out.println("\n [Q] pour fermer le programme");
-
-        String action = "";
-        while (!action.equalsIgnoreCase("R") && !action.equalsIgnoreCase("Q")){
-            System.out.println("Votre choix : ");
+            String action = "";
             action = sc.nextLine();
+            while (!action.equalsIgnoreCase("R") && !action.equalsIgnoreCase("Q")){
+                System.out.println("Votre choix : ");
+                action = sc.nextLine().trim();
+            }
+            if (action.equalsIgnoreCase("Q")) {
+                condition = false;
+                System.out.println("Fermeture du simulateur");
+            }
         }
-        if (action.equalsIgnoreCase("Q")) {
-            condition = false;
-            System.out.println("Fermeture du simulateur");
-        }
-        else if (action.equalsIgnoreCase("R")) {
-            System.out.println("Redémarage du programme");
-            condition = true;
-        }
+
+
+
 
 
 
